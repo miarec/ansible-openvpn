@@ -1,0 +1,22 @@
+---
+- name: Install Dependencies [CE-RHEL/CentOS]
+  yum:
+    name:
+      - epel-release
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "RedHat"
+
+- name: Install OpenVPN Package. [CE-RHEL/CentOS]
+  yum:
+    name:
+      - openvpn
+    state: presnt
+  when: ansible_os_family == "RedHat"
+
+- name: Install OpenVPN package. [CE-Debian]
+  apt:
+    name: openvpn
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"

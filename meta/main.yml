@@ -1,0 +1,24 @@
+---
+dependencies: []
+
+galaxy_info:
+  role_name: openvpn
+  author: miarec
+  description: Deploy OpenVPN
+  company: "MiaRec, Inc"
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.4
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all

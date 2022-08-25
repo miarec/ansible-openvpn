@@ -1,0 +1,39 @@
+---
+- name: Install OpenVPN AS on RedHat/CentOS.
+  import_tasks: as_rhel_install.yml
+  when:
+    - ansible_os_family == "RedHat"
+    - install_as
+
+- name: Install OpenVPN AS on Debian.
+  import_tasks: as_debian_install.yml
+  when:
+    - ansible_os_family == "Debian"
+    - install_as
+
+- name: Install OpenVPN CE on RedHat/Centos.
+  import_tasks: ce_install.yml
+  when:
+    - not install_as
+
+- name: Build CA and Server Certificates using Easy-RSA.
+  import_tasks: ce_certs_server.yml
+  when:
+    - not install_as
+
+- name: Configure Clients Certificates using Easy-RSA.
+  import_tasks: ce_certs_clients.yml
+  when:
+    - not install_as
+
+- name: Configure IP Forwarding.
+  import_tasks: ce_network.yml
+  when:
+    - not install_as
+
+- name: Configure OpenVPN Server and Clients.
+  import_tasks: ce_config.yml
+  when:
+    - not install_as
+
+
