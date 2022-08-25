@@ -44,7 +44,7 @@
   register: "client_keys"
   with_items: "{{ users }}"
 
-- name: Create/Update OpenVPN Client configuration file
+- name: Create/Update OpenVPN Client configuration files.
   no_log: true
   template:
     src: client.ovpn.j2
