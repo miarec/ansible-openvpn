@@ -1,0 +1,128 @@
+---
+# Ensure Easy-RSA is installed
+- name: Install Easy-RSA package. [CE-RHEL/CentOS]
+  yum:
+    name: easy-rsa
+    state: presnt
+  when: ansible_os_family == "RedHat"
+
+- name: Install Easy-RSA package. [CE-Debian]
+  apt:
+    name: easy-rsa
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+# Create PKI Infrastructure
+- name: Create PKI directories.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 700
+  with_items:
+    - "{{ easyrsa_ca_dir }}"
+    - "{{ easyrsa_server_dir }}"
+    - "{{ easyrsa_clients_dir }}"
+
+- name: Initialize PKIs.
+  command: "{{ easyrsa_bin }} init-pki"
+  args:
+    chdir: "{{ item }}"
+    creates: "{{ item }}/pki"
+  with_items:
+    - "{{ easyrsa_ca_dir }}"
+    - "{{ easyrsa_server_dir }}"
+    - "{{ easyrsa_clients_dir }}"
+    - "{{ openvpn_clients_keys_dir }}"
+
+# Build Certificate Authority
+- name: Create CA Vars.
+  template:
+    src: easyrsa-ca-vars.j2
+    dest: "{{ easyrsa_ca_dir }}/vars"
+
+- name: Build CA.
+  command: "{{ easyrsa_bin }} --batch build-ca nopass"
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/private/ca.key"
+
+- name: Move CA Certificate to OpenVPN Server and Client directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_ca_dir }}/pki/ca.crt"
+    dest: "{{ openvpn_config_dir }}/server/{{ openvpn_ca_crt_name }}"
+
+
+# Generate Signing request for server, import to CA and Sign
+- name: Create Server Request and Key.
+  command: "{{ easyrsa_bin }} --batch --req-cn={{ hostname }} gen-req {{ hostname }} nopass"
+  args:
+    chdir: "{{ easyrsa_server_dir }}"
+    creates: "{{ easyrsa_server_dir }}/pki/private/{{ hostname }}.key"
+
+- name: Import Server Request.
+  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_server_dir }}/pki/reqs/{{ hostname }}.req {{ hostname }}"
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ hostname }}.req"
+
+- name: Sign Server Request.
+  command: "{{ easyrsa_bin }} --batch sign-req server {{ hostname }}"
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
+
+- name: Create Server TLS Key.
+  command: "openvpn --genkey secret {{ openvpn_ta_key_name }}"
+  args:
+    chdir: "{{ openvpn_config_dir }}/server"
+    creates: "{{ openvpn_config_dir }}/server/{{ openvpn_ta_key_name }}"
+
+- name: Move Server key to OpenVPN Server directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_server_dir }}/pki/private/{{ hostname }}.key"
+    dest: "{{ openvpn_config_dir }}/server/{{ openvpn_server_key_name }}"
+
+- name: Move signed Server Certificate to OpenVPN directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
+    dest: "{{ openvpn_config_dir }}/server/{{ openvpn_server_crt_name }}"
+
+# Create Signing requests per user,  import to CA and Sign
+- name: Create Clients Requests and Keys.
+  command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
+  args:
+    chdir: "{{ easyrsa_clients_dir }}"
+    creates: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
+  with_items: "{{ users }}"
+
+- name: Import Clients Request.
+  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req {{ item }}"
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ item }}.req"
+  with_items: "{{ users }}"
+
+- name: Sign Client Request.
+  command: "{{ easyrsa_bin }} --batch sign-req client {{ item }}"
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
+  with_items: "{{ users }}"
+
+- name: Move Signed Clients Certificate to OpenVPN Client directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
+    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.crt"
+  with_items: "{{ users }}"
+
+- name: Move Clients Keys to OpenVPN Client directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
+    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.key"
+  with_items: "{{ users }}"
