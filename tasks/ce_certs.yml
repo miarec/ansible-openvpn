@@ -33,7 +33,6 @@
     - "{{ easyrsa_ca_dir }}"
     - "{{ easyrsa_server_dir }}"
     - "{{ easyrsa_clients_dir }}"
-    - "{{ openvpn_clients_keys_dir }}"
 
 # Build Certificate Authority
 - name: Create CA Vars.
@@ -91,38 +90,3 @@
     src: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
     dest: "{{ openvpn_config_dir }}/server/{{ openvpn_server_crt_name }}"
 
-# Create Signing requests per user,  import to CA and Sign
-- name: Create Clients Requests and Keys.
-  command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
-  args:
-    chdir: "{{ easyrsa_clients_dir }}"
-    creates: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
-  with_items: "{{ users }}"
-
-- name: Import Clients Request.
-  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req {{ item }}"
-  args:
-    chdir: "{{ easyrsa_ca_dir }}"
-    creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ item }}.req"
-  with_items: "{{ users }}"
-
-- name: Sign Client Request.
-  command: "{{ easyrsa_bin }} --batch sign-req client {{ item }}"
-  args:
-    chdir: "{{ easyrsa_ca_dir }}"
-    creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
-  with_items: "{{ users }}"
-
-- name: Move Signed Clients Certificate to OpenVPN Client directory.
-  copy:
-    remote_src: true
-    src: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
-    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.crt"
-  with_items: "{{ users }}"
-
-- name: Move Clients Keys to OpenVPN Client directory.
-  copy:
-    remote_src: true
-    src: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
-    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.key"
-  with_items: "{{ users }}"

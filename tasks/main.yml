@@ -25,7 +25,7 @@
     - not install_as
 
 # Create CA and Server certs for OpenVPN CE
-- name: Generate Certificate Configuration
+- name: Generate CA / Server Certificate Configuration
   import_tasks: ce_certs.yml
   when:
     - not install_as
@@ -42,8 +42,13 @@
 #     - not install_as
 
 
-- name: Configure OpenVPN Server and Clients.
+- name: Configure OpenVPN Server.
   import_tasks: ce_config.yml
+  when:
+    - not install_as
+
+- name: Configure Clients Certificates and Configuration Files.
+  import_tasks: ce_clients.yml
   when:
     - not install_as
 
