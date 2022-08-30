@@ -4,7 +4,7 @@
   become: true
 
   roles:
-    - role: openvpn
+    - role: ansible-openvpn
       users: ["user1"]
       client_routes: ["10.0.0.0 255.255.255.0"]
       openvpn_server_crt_name: "instance.crt"
