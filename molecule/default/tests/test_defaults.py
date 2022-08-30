@@ -23,7 +23,7 @@ def test_directories(host):
 
 def test_files(host):
     files = [
-        "/etc/openvpn/server.conf",
+        "/etc/openvpn/server/server.conf",
         "/etc/openvpn/server/ca.crt",
         "/etc/openvpn/server/instance.crt",
         "/etc/openvpn/server/instance.key",
