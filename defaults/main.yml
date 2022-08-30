@@ -1,9 +1,10 @@
 ---
+# OpenVPN AS Vars
 install_as: false
+as_repo_url: http://as-repository.openvpn.net/as/debian
+openvpn_as_repo: deb {{ as_repo_url }} {{ ansible_distribution_release }} main
 
-# OpenVPN vars
-openvpn_version: "2.5.7"
-
+# OpenVPN CE vars
 openvpn_config_dir: "/etc/openvpn"
 openvpn_clients_dir: "{{ openvpn_config_dir }}/client-configs"
 openvpn_clients_keys_dir: "{{ openvpn_clients_dir }}/keys"
@@ -19,16 +20,13 @@ openvpn_log_status: "{{ openvpn_log_dir }}/status.log"
 openvpn_log_verb: 3
 openvpn_client_log_verb: 3
 # Set the appropriate level of log file verbosity 0-9.
-#
-# 0 is silent, except for fatal errors
-# 4 is reasonable for general usage
-# 9 is extremely verbose
 
 openvpn_vpn_port: "443"
 openvpn_vpn_protocol: "tcp"
 keepalive_interval: 10  # in seconds
 keepalive_timeout: 120  # in seconds
 max_clients: 10
+client_subnet: "10.8.0.0 255.255.255.0"
 
 openvpn_ca_crt_name: "ca.crt"
 openvpn_server_crt_name: "{{ hostname }}.crt"
@@ -46,11 +44,9 @@ easyrsa_clients_dir: "{{ easyrsa_config_dir }}/clients"
 easyrsa_ca_cn: "{{ hostname }}"
 easyrsa_ca_country: "US"
 easyrsa_ca_province: "CA"
-easyrsa_ca_city: "Campbell"
-easyrsa_ca_org: "MiaRec"
-easyrsa_ca_email: "ssl@miarec.com"
+easyrsa_ca_city: "City"
+easyrsa_ca_org: "Example"
+easyrsa_ca_email: "ssl@example.com"
 easyrsa_ca_ou: "Community"
 easyrsa_ca_algo: "ec"
 easyrsa_ca_digest: "sha512"
-
-

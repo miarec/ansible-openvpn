@@ -3,7 +3,7 @@
   shell:
     cmd: cat /usr/local/openvpn_as/init.log | grep 'To login'
   register: grep_output
-  ignore_errors: yes
+  ignore_errors: true
   changed_when: false
 
 - name: Print default Login [AS-RHEL/Centos]]

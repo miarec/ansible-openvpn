@@ -1,0 +1,91 @@
+---
+# Create Client Configurations Directories
+- name: Create Clients Configuration directory.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 700
+  with_items:
+    - "{{ openvpn_clients_dir }}"
+    - "{{ openvpn_clients_config_dir }}"
+    - "{{ openvpn_clients_keys_dir }}"
+
+- name: Create Clients Requests and Keys.
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    --req-cn={{ item }}
+    gen-req {{ item }}
+    nopass
+  args:
+    chdir: "{{ easyrsa_clients_dir }}"
+    creates: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
+  with_items: "{{ users }}"
+
+- name: Import Clients Request.
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req
+    {{ item }}
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ item }}.req"
+  with_items: "{{ users }}"
+
+- name: Sign Client Request.
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    sign-req client {{ item }}
+  args:
+    chdir: "{{ easyrsa_ca_dir }}"
+    creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
+  with_items: "{{ users }}"
+
+- name: Move Signed Clients Certificate to OpenVPN Client directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
+    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.crt"
+  with_items: "{{ users }}"
+
+- name: Move Clients Keys to OpenVPN Client directory.
+  copy:
+    remote_src: true
+    src: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
+    dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.key"
+  with_items: "{{ users }}"
+
+- name: Register CA Certificae.
+  slurp:
+    src: "{{ openvpn_config_dir }}/server/{{ openvpn_ca_crt_name }}"
+  register: "ca_cert"
+
+- name: Register TLS Certificae.
+  slurp:
+    src: "{{ openvpn_config_dir }}/server/{{ openvpn_ta_key_name }}"
+  register: "tls_cert"
+
+- name: Register Client Certs.
+  slurp:
+    src: "{{ openvpn_clients_keys_dir }}/{{ item }}.crt"
+  register: "client_certs"
+  with_items: "{{ users }}"
+
+- name: Register Client Keys
+  slurp:
+    src: "{{ openvpn_clients_keys_dir }}/{{ item }}.key"
+  register: "client_keys"
+  with_items: "{{ users }}"
+
+- name: Create OpenVPN Client configuration files on Localhost.
+  no_log: true
+  become: false
+  delegate_to: localhost
+  template:
+    src: client.ovpn.j2
+    dest: "{{ item.0.item }}.ovpn"
+  with_together:
+    - "{{ client_certs.results }}"
+    - "{{ client_keys.results }}"
