@@ -13,4 +13,4 @@
   service:
     name: openvpn-server@server
     state: started
-    enabled: trus
+    enabled: true
