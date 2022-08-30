@@ -11,33 +11,21 @@
     - "{{ openvpn_clients_keys_dir }}"
 
 - name: Create Clients Requests and Keys.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    --req-cn={{ item }}
-    gen-req {{ item }}
-    nopass
+  command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
   args:
     chdir: "{{ easyrsa_clients_dir }}"
     creates: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
   with_items: "{{ users }}"
 
 - name: Import Clients Request.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req
-    {{ item }}
+  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req {{ item }}"
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ item }}.req"
   with_items: "{{ users }}"
 
 - name: Sign Client Request.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    sign-req client {{ item }}
+  command: "{{ easyrsa_bin }} --batch sign-req client {{ item }}"
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
