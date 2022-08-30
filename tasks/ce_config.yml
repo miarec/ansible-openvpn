@@ -15,15 +15,15 @@
     state: started
     enabled: yes
 
-# Create Client Configurations Directories
-- name: Create Clients Configuration directory.
-  file:
-    path: "{{ openvpn_clients_config_dir }}"
-    state: directory
-    mode: 700
-  with_items:
-    - "{{ openvpn_clients_dir }}"
-    - "{{ openvpn_clients_config_dir }}"
-    - "{{ openvpn_clients_keys_dir }}"
+# # Create Client Configurations Directories
+# - name: Create Clients Configuration directory.
+#   file:
+#     path: "{{ openvpn_clients_config_dir }}"
+#     state: directory
+#     mode: 700
+#   with_items:
+#     - "{{ openvpn_clients_dir }}"
+#     - "{{ openvpn_clients_config_dir }}"
+#     - "{{ openvpn_clients_keys_dir }}"
 
 

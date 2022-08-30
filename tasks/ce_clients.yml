@@ -1,4 +1,15 @@
 ---
+# Create Client Configurations Directories
+- name: Create Clients Configuration directory.
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 700
+  with_items:
+    - "{{ openvpn_clients_dir }}"
+    - "{{ openvpn_clients_config_dir }}"
+    - "{{ openvpn_clients_keys_dir }}"
+
 # Create Signing requests per user,  import to CA and Sign
 - name: Create Clients Requests and Keys.
   command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
