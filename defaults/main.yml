@@ -19,10 +19,6 @@ openvpn_log_status: "{{ openvpn_log_dir }}/status.log"
 openvpn_log_verb: 3
 openvpn_client_log_verb: 3
 # Set the appropriate level of log file verbosity 0-9.
-#
-# 0 is silent, except for fatal errors
-# 4 is reasonable for general usage
-# 9 is extremely verbose
 
 openvpn_vpn_port: "443"
 openvpn_vpn_protocol: "tcp"
@@ -45,10 +41,10 @@ easyrsa_clients_dir: "{{ easyrsa_config_dir }}/clients"
 # Vars for CA
 easyrsa_ca_cn: "{{ hostname }}"
 easyrsa_ca_country: "US"
-easyrsa_ca_province: "CA"
-easyrsa_ca_city: "Campbell"
-easyrsa_ca_org: "MiaRec"
-easyrsa_ca_email: "ssl@miarec.com"
+easyrsa_ca_province: "CT"
+easyrsa_ca_city: "City"
+easyrsa_ca_org: "Example"
+easyrsa_ca_email: "ssl@example.com"
 easyrsa_ca_ou: "Community"
 easyrsa_ca_algo: "ec"
 easyrsa_ca_digest: "sha512"

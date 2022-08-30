@@ -25,16 +25,3 @@
     state: present
     update_cache: yes
   register: __as_install_apt
-
-# - name: Pull Default Login from init log [AS-Debian]
-#   shell:
-#     cmd: cat /usr/local/openvpn_as/init.log | grep 'To login'
-#   register: grep_output
-#   ignore_errors: yes
-#   changed_when: false
-
-# - name: Print default Login [AS-Debian]
-#   debug:
-#     msg: "{{ inventory_hostname }}: '{{ grep_output.stdout }}'"
-
-

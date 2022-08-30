@@ -1,13 +1,18 @@
 ---
+#########################################
+# Install OpenVPN Access Server AS      #
+# Limit to 2 connections without license#
+# GUI                                   #
+#########################################
 # Install OpenVPN Access Server (GUI with 2 client limit) if Enabled
 - name: Install OpenVPN AS on RedHat/CentOS.
-  import_tasks: as_rhel_install.yml
+  import_tasks: as_install_rhel.yml
   when:
     - ansible_os_family == "RedHat"
     - install_as
 
 - name: Install OpenVPN AS on Debian.
-  import_tasks: as_debian_install.yml
+  import_tasks: as_install_debian.yml
   when:
     - ansible_os_family == "Debian"
     - install_as
@@ -18,7 +23,11 @@
     - install_as
     - __as_install_yum.changed or __as_install_apt.changed
 
-# Install OpenVPN Communitiy Edition if Enabled
+#########################################
+# Install OpenVPN Communitiy Edition CE #
+# Open Source, CLI only                 #
+#########################################
+# Install OpenVPN CE if Enabled
 - name: Install OpenVPN CE on RedHat/Centos.
   import_tasks: ce_install.yml
   when:
@@ -30,23 +39,13 @@
   when:
     - not install_as
 
-# - name: Build CA and Server Certificates using Easy-RSA.
-#   import_tasks: ce_certs_server.yml
-#   when:
-#     - not install_as
-
-
-# - name: Configure Clients Certificates using Easy-RSA.
-#   import_tasks: ce_certs_clients.yml
-#   when:
-#     - not install_as
-
-
+# Create OpenVPN Configuration.
 - name: Configure OpenVPN Server.
   import_tasks: ce_config.yml
   when:
     - not install_as
 
+# Create Client Certificates and Config files
 - name: Configure Clients Certificates and Configuration Files.
   import_tasks: ce_clients.yml
   when:

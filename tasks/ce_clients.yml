@@ -83,5 +83,5 @@
 - name: Pull client connection files to localhost
   fetch:
     src: "{{ openvpn_clients_config_dir }}/{{ item }}.ovpn"
-    dest: "client.ovpn"
+    dest: "client.ovpn/{{ item }}.ovpn"
   with_items: "{{ users }}"
