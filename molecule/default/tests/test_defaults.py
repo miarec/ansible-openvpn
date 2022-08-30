@@ -10,11 +10,10 @@ def test_directories(host):
     dirs = [
         "/etc/openvpn",
         "/etc/openvpn/client-configs",
-        "/etc/openvpn/client-configs/keys"
+        "/etc/openvpn/client-configs/keys",
         "/etc/easyrsa/ca",
         "/etc/easyrsa/server",
-        "/etc/easyrsa/clients",
-
+        "/etc/easyrsa/clients"
     ]
     for dir in dirs:
         d = host.file(dir)
