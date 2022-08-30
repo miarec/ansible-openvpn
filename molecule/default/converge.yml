@@ -7,9 +7,6 @@
     - role: ansible-openvpn
       users: ["user1"]
       client_routes: ["10.0.0.0 255.255.255.0"]
-      hostname: "instnace"
-      # openvpn_server_crt_name: "instance.crt"
-      # openvpn_server_key_name: "instance.key"
-      # openvpn_ta_key_name: "instance-ta.key"
+      hostname: "instance"
       tags:
         - openvpn
