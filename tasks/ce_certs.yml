@@ -10,7 +10,7 @@
   apt:
     name: easy-rsa
     state: present
-    update_cache: yes
+    update_cache: true
   when: ansible_os_family == "Debian"
 
 # Create PKI Infrastructure
@@ -25,7 +25,9 @@
     - "{{ easyrsa_clients_dir }}"
 
 - name: Initialize PKIs.
-  command: "{{ easyrsa_bin }} init-pki"
+  shell: |
+    {{ easyrsa_bin }}
+    init-pki
   args:
     chdir: "{{ item }}"
     creates: "{{ item }}/pki"
@@ -41,7 +43,11 @@
     dest: "{{ easyrsa_ca_dir }}/vars"
 
 - name: Build CA.
-  command: "{{ easyrsa_bin }} --batch build-ca nopass"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    build-ca
+    nopass
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/private/ca.key"
@@ -55,25 +61,39 @@
 
 # Generate Signing request for server, import to CA and Sign
 - name: Create Server Request and Key.
-  command: "{{ easyrsa_bin }} --batch --req-cn={{ hostname }} gen-req {{ hostname }} nopass"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    --req-cn={{ hostname }}
+    gen-req {{ hostname }}
+    nopass
   args:
     chdir: "{{ easyrsa_server_dir }}"
     creates: "{{ easyrsa_server_dir }}/pki/private/{{ hostname }}.key"
 
 - name: Import Server Request.
-  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_server_dir }}/pki/reqs/{{ hostname }}.req {{ hostname }}"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    import-req {{ easyrsa_server_dir }}/pki/reqs/{{ hostname }}.req
+    {{ hostname }}
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ hostname }}.req"
 
 - name: Sign Server Request.
-  command: "{{ easyrsa_bin }} --batch sign-req server {{ hostname }}"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    sign-req server {{ hostname }}
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
 
 - name: Create Server TLS Key.
-  command: "openvpn --genkey secret {{ openvpn_ta_key_name }}"
+  shell: |
+    openvpn
+    --genkey secret {{ openvpn_ta_key_name }}
   args:
     chdir: "{{ openvpn_config_dir }}/server"
     creates: "{{ openvpn_config_dir }}/server/{{ openvpn_ta_key_name }}"
@@ -89,4 +109,3 @@
     remote_src: true
     src: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
     dest: "{{ openvpn_config_dir }}/server/{{ openvpn_server_crt_name }}"
-

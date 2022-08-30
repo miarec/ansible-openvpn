@@ -10,23 +10,34 @@
     - "{{ openvpn_clients_config_dir }}"
     - "{{ openvpn_clients_keys_dir }}"
 
-# Create Signing requests per user,  import to CA and Sign
 - name: Create Clients Requests and Keys.
-  command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    --req-cn={{ item }}
+    gen-req {{ item }}
+    nopass
   args:
     chdir: "{{ easyrsa_clients_dir }}"
     creates: "{{ easyrsa_clients_dir }}/pki/private/{{ item }}.key"
   with_items: "{{ users }}"
 
 - name: Import Clients Request.
-  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req {{ item }}"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    import-req {{ easyrsa_clients_dir }}/pki/reqs/{{ item }}.req
+    {{ item }}
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ item }}.req"
   with_items: "{{ users }}"
 
 - name: Sign Client Request.
-  command: "{{ easyrsa_bin }} --batch sign-req client {{ item }}"
+  shell: |
+    {{ easyrsa_bin }}
+    --batch
+    sign-req client {{ item }}
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ item }}.crt"
@@ -68,20 +79,13 @@
   register: "client_keys"
   with_items: "{{ users }}"
 
-- name: Create/Update OpenVPN Client configuration files.
+- name: Create OpenVPN Client configuration files on Localhost.
   no_log: true
+  become: false
+  delegate_to: localhost
   template:
     src: client.ovpn.j2
-    dest: "{{ openvpn_clients_config_dir }}/{{ item.0.item }}.ovpn"
-    owner: root
-    mode: 0644
+    dest: "{{ item.0.item }}.ovpn"
   with_together:
     - "{{ client_certs.results }}"
     - "{{ client_keys.results }}"
-  notify: restart openvpn
-
-- name: Pull client connection files to localhost
-  fetch:
-    src: "{{ openvpn_clients_config_dir }}/{{ item }}.ovpn"
-    dest: "client.ovpn/{{ item }}.ovpn"
-  with_items: "{{ users }}"

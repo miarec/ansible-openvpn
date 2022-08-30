@@ -6,7 +6,7 @@
       - wget
       - net-tools
       - gnupg
-    update_cache: yes
+    update_cache: true
 
 - name: Add apt key. [AS-Debian]
   apt_key:
@@ -15,7 +15,7 @@
 
 - name: Add apt repository. [AS-Debian]
   apt_repository:
-    repo: deb http://as-repository.openvpn.net/as/debian {{ ansible_distribution_release }} main
+    repo: "{{ openvpn_as_repo }}"
     state: present
     filename: openvpn-as-repo.list
 
@@ -23,5 +23,5 @@
   apt:
     name: openvpn-as
     state: present
-    update_cache: yes
+    update_cache: true
   register: __as_install_apt

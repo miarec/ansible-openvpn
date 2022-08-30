@@ -50,5 +50,3 @@
   import_tasks: ce_clients.yml
   when:
     - not install_as
-
-

@@ -68,9 +68,8 @@ an ansible role such as https://github.com/miarec/ansible-role-iptables can be u
 
 Sample Playbooks below include this role.
 
-## Sample playbook
-
-Sample playbook to install CE
+## Sample playbooks
+### Sample playbook to install CE
 ```yaml
 ---
 # ------------------------------------------------
@@ -111,7 +110,7 @@ Sample playbook to install CE
   tags: 'iptables'
 ```
 
-Sample playbook to install AS
+### Sample playbook to install AS
 ```yaml
 ---
 # ------------------------------------------------
@@ -125,5 +124,4 @@ Sample playbook to install AS
     - role: 'openvpn'
       install_as: true
   tags: 'openvpn'
-
 ```
