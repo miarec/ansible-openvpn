@@ -25,9 +25,7 @@
     - "{{ easyrsa_clients_dir }}"
 
 - name: Initialize PKIs.
-  shell: |
-    {{ easyrsa_bin }}
-    init-pki
+  command: "{{ easyrsa_bin }} init-pki"
   args:
     chdir: "{{ item }}"
     creates: "{{ item }}/pki"
@@ -43,11 +41,7 @@
     dest: "{{ easyrsa_ca_dir }}/vars"
 
 - name: Build CA.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    build-ca
-    nopass
+  command: "{{ easyrsa_bin }} --batch build-ca nopass"
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/private/ca.key"
@@ -61,39 +55,25 @@
 
 # Generate Signing request for server, import to CA and Sign
 - name: Create Server Request and Key.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    --req-cn={{ hostname }}
-    gen-req {{ hostname }}
-    nopass
+  command: "{{ easyrsa_bin }} --batch --req-cn={{ hostname }} gen-req {{ hostname }} nopass"
   args:
     chdir: "{{ easyrsa_server_dir }}"
     creates: "{{ easyrsa_server_dir }}/pki/private/{{ hostname }}.key"
 
 - name: Import Server Request.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    import-req {{ easyrsa_server_dir }}/pki/reqs/{{ hostname }}.req
-    {{ hostname }}
+  command: "{{ easyrsa_bin }} --batch import-req {{ easyrsa_server_dir }}/pki/reqs/{{ hostname }}.req {{ hostname }}"
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/reqs/{{ hostname }}.req"
 
 - name: Sign Server Request.
-  shell: |
-    {{ easyrsa_bin }}
-    --batch
-    sign-req server {{ hostname }}
+  command: "{{ easyrsa_bin }} --batch sign-req server {{ hostname }}"
   args:
     chdir: "{{ easyrsa_ca_dir }}"
     creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
 
 - name: Create Server TLS Key.
-  shell: |
-    openvpn
-    --genkey secret {{ openvpn_ta_key_name }}
+  command: "openvpn --genkey secret {{ openvpn_ta_key_name }}"
   args:
     chdir: "{{ openvpn_config_dir }}/server"
     creates: "{{ openvpn_config_dir }}/server/{{ openvpn_ta_key_name }}"
