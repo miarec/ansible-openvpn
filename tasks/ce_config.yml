@@ -11,6 +11,6 @@
 # Handle Openvpn Server Service
 - name: Enable and Start OpenVPN-CE Server service.
   service:
-    name: openvpn-server@server
+    name: openvpn-server@server.service
     state: started
     enabled: true
