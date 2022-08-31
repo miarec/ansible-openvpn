@@ -5,16 +5,8 @@
     name: openvpn-server@server
     state: restarted
 
-
 # Pull Login information After AS Install
 - name: OpenVPN-AS Login
   shell:
     cmd: cat /usr/local/openvpn_as/init.log | grep 'To login'
   register: AS_login
-
-
-# - name: Print default Login [AS-RHEL/Centos]]
-#   debug:
-#     msg: "{{ inventory_hostname }}: '{{ grep_output.stdout }}'"
-#   when:
-#     - __as_install_yum.changed or __as_install_apt.changed

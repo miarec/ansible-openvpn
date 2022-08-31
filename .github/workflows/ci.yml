@@ -30,6 +30,8 @@ jobs:
     strategy:
       matrix:
         distro:
+          - centos7
+          - centos8
           - ubuntu2004
           - ubuntu2204
 

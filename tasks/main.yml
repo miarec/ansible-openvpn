@@ -1,55 +1,24 @@
 ---
+# Include OS Specific Vars.
 - name: Include Debian Specific Vars.
   include_vars:
-    files: debian.yml
+    file: debian.yml
   when:
     - ansible_os_family == "Debian"
 
 - name: Include RHEL/CentOS Specific Vars.
   include_vars:
-    files: rhel.yml
+    file: rhel.yml
   when:
     - ansible_os_family == "RedHat"
 
-
-
-###################################################################
-# Install OpenVPN Access Server AS
-# Limit to 2 connections without license, includes GUI
-###################################################################
-
-
 # Install OpenVPN Access Server (GUI with 2 client limit) if Enabled
-
-# - name: Install OpenVPN AS on RedHat/CentOS.
-#   import_tasks: as_install_rhel.yml
-#   when:
-#     - ansible_os_family == "RedHat"
-#     - install_as
-
-# - name: Install OpenVPN AS on Debian.
-#   import_tasks: as_install_debian.yml
-#   when:
-#     - ansible_os_family == "Debian"
-#     - install_as
-
 - name: Install OpenVPN AS.
   import_tasks: as_install.yml
   when:
     - install_as
 
-# - name: Retrieve OpenVPN AS Default Login.
-#   import_tasks: as_login.yml
-#   when:
-#     - install_as
-#     - __as_install_yum.changed or __as_install_apt.changed
-
-###################################################################
-# Install OpenVPN Communitiy Edition CE
-# Open Source, CLI only
-###################################################################
-
-# Install OpenVPN CE if Enabled
+# Install OpenVPN Community Edition (Open Source, CLI only) if Enabled
 - name: Install OpenVPN CE.
   import_tasks: ce_install.yml
   when:
