@@ -12,6 +12,18 @@
   when:
     - ansible_os_family == "RedHat"
 
+- name: Update apt cache.
+  apt:
+    update_cache: true
+  when:
+    - ansible_os_family == "Debian"
+
+- name: Update yum cache.
+  yum:
+    update_cache: true
+  when:
+    - ansible_os_family == "RedHat"
+
 # Install OpenVPN Access Server (GUI with 2 client limit) if Enabled
 - name: Install OpenVPN AS.
   import_tasks: as_install.yml

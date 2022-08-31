@@ -34,7 +34,6 @@ openvpn_server_key_name: "{{ hostname }}.key"
 openvpn_ta_key_name: "{{ hostname }}-ta.key"
 
 # Easy-RSA vars
-easyrsa_version: "3.0.8"
 easyrsa_config_dir: "/etc/easyrsa"
 easyrsa_bin: "{{ easyrsa_dir }}/easyrsa"
 easyrsa_ca_dir: "{{ easyrsa_config_dir }}/ca"
