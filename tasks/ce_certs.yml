@@ -3,7 +3,7 @@
 - name: Install Easy-RSA package. [CE-RHEL/CentOS]
   yum:
     name: easy-rsa
-    state: presnt
+    state: present
   when: ansible_os_family == "RedHat"
 
 - name: Install Easy-RSA package. [CE-Debian]
@@ -73,7 +73,7 @@
     creates: "{{ easyrsa_ca_dir }}/pki/issued/{{ hostname }}.crt"
 
 - name: Create Server TLS Key.
-  command: "openvpn --genkey secret {{ openvpn_ta_key_name }}"
+  command: "openvpn --genkey --secret {{ openvpn_ta_key_name }}"
   args:
     chdir: "{{ openvpn_config_dir }}/server"
     creates: "{{ openvpn_config_dir }}/server/{{ openvpn_ta_key_name }}"
