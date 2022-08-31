@@ -1,0 +1,10 @@
+---
+openvpn_as_dependencies:
+  - ca-certificates
+  - wget
+  - net-tools
+  - gnupg
+openvpn_ce_dependencies:
+easyrsa_package: "easy-rsa"
+easyrsa_dependencies:
+easyrsa_dir: "/usr/share/easy-rsa"

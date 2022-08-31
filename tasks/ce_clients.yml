@@ -4,12 +4,13 @@
   file:
     path: "{{ item }}"
     state: directory
-    mode: 700
+    mode: 0700
   with_items:
     - "{{ openvpn_clients_dir }}"
     - "{{ openvpn_clients_config_dir }}"
     - "{{ openvpn_clients_keys_dir }}"
 
+# Create Client Certificates and Keys, import to CA and Sign.
 - name: Create Clients Requests and Keys.
   command: "{{ easyrsa_bin }} --batch --req-cn={{ item }} gen-req {{ item }} nopass"
   args:
@@ -45,6 +46,7 @@
     dest: "{{ openvpn_clients_keys_dir }}/{{ item }}.key"
   with_items: "{{ users }}"
 
+# Generate OVPN files for clients.
 - name: Register CA Certificae.
   slurp:
     src: "{{ openvpn_config_dir }}/server/{{ openvpn_ca_crt_name }}"

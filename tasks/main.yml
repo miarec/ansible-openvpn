@@ -1,34 +1,37 @@
 ---
-#########################################
-# Install OpenVPN Access Server AS      #
-# Limit to 2 connections without license#
-# GUI                                   #
-#########################################
-# Install OpenVPN Access Server (GUI with 2 client limit) if Enabled
-- name: Install OpenVPN AS on RedHat/CentOS.
-  import_tasks: as_install_rhel.yml
-  when:
-    - ansible_os_family == "RedHat"
-    - install_as
-
-- name: Install OpenVPN AS on Debian.
-  import_tasks: as_install_debian.yml
+# Include OS Specific Vars.
+- name: Include Debian Specific Vars.
+  include_vars:
+    file: debian.yml
   when:
     - ansible_os_family == "Debian"
-    - install_as
 
-- name: Retrieve OpenVPN AS Default Login.
-  import_tasks: as_login.yml
+- name: Include RHEL/CentOS Specific Vars.
+  include_vars:
+    file: rhel.yml
+  when:
+    - ansible_os_family == "RedHat"
+
+- name: Update apt cache.
+  apt:
+    update_cache: true
+  when:
+    - ansible_os_family == "Debian"
+
+- name: Update yum cache.
+  yum:
+    update_cache: true
+  when:
+    - ansible_os_family == "RedHat"
+
+# Install OpenVPN Access Server (GUI with 2 client limit) if Enabled
+- name: Install OpenVPN AS.
+  import_tasks: as_install.yml
   when:
     - install_as
-    - __as_install_yum.changed or __as_install_apt.changed
 
-#########################################
-# Install OpenVPN Communitiy Edition CE #
-# Open Source, CLI only                 #
-#########################################
-# Install OpenVPN CE if Enabled
-- name: Install OpenVPN CE on RedHat/Centos.
+# Install OpenVPN Community Edition (Open Source, CLI only) if Enabled
+- name: Install OpenVPN CE.
   import_tasks: ce_install.yml
   when:
     - not install_as

@@ -1,24 +1,10 @@
 ---
-# Ensure Easy-RSA is installed
-- name: Install Easy-RSA package. [CE-RHEL/CentOS]
-  yum:
-    name: easy-rsa
-    state: present
-  when: ansible_os_family == "RedHat"
-
-- name: Install Easy-RSA package. [CE-Debian]
-  apt:
-    name: easy-rsa
-    state: present
-    update_cache: true
-  when: ansible_os_family == "Debian"
-
 # Create PKI Infrastructure
 - name: Create PKI directories.
   file:
     path: "{{ item }}"
     state: directory
-    mode: 700
+    mode: 0700
   with_items:
     - "{{ easyrsa_ca_dir }}"
     - "{{ easyrsa_server_dir }}"
@@ -51,7 +37,6 @@
     remote_src: true
     src: "{{ easyrsa_ca_dir }}/pki/ca.crt"
     dest: "{{ openvpn_config_dir }}/server/{{ openvpn_ca_crt_name }}"
-
 
 # Generate Signing request for server, import to CA and Sign
 - name: Create Server Request and Key.

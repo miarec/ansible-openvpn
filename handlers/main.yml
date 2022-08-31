@@ -4,3 +4,9 @@
   service:
     name: openvpn-server@server
     state: restarted
+
+# Pull Login information After AS Install
+- name: OpenVPN-AS Login
+  shell:
+    cmd: cat /usr/local/openvpn_as/init.log | grep 'To login'
+  register: AS_login
