@@ -6,7 +6,10 @@
 # https://github.com/miarec/ansible-openvpn  #
 ##############################################
 
-# Connection Configuration
+# Authentication Configuration.
+auth-user-pass
+
+# Connection Configuration.
 client
 dev tun
 proto {{ openvpn_vpn_protocol }}
@@ -18,6 +21,8 @@ persist-tun
 remote-cert-tls server
 cipher AES-256-GCM
 auth SHA256
+
+# Logging Configuration.
 verb {{ openvpn_client_log_verb }}
 key-direction 1
 

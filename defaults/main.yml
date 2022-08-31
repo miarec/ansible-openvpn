@@ -21,6 +21,8 @@ openvpn_log_verb: 3
 openvpn_client_log_verb: 3
 # Set the appropriate level of log file verbosity 0-9.
 
+openvpn_user_group: "vpnuser"
+
 openvpn_vpn_port: "443"
 openvpn_vpn_protocol: "tcp"
 keepalive_interval: 10  # in seconds
@@ -32,6 +34,10 @@ openvpn_ca_crt_name: "ca.crt"
 openvpn_server_crt_name: "{{ hostname }}.crt"
 openvpn_server_key_name: "{{ hostname }}.key"
 openvpn_ta_key_name: "{{ hostname }}-ta.key"
+
+
+
+
 
 # Easy-RSA vars
 easyrsa_config_dir: "/etc/easyrsa"
