@@ -1,4 +1,12 @@
 ---
+# Create OpenVPN-CE Log Directory
+- name: Create Clients Configuration directory.
+  file:
+    path: "{{ openvpn_log_dir }}"
+    state: directory
+    mode: 0700
+
+
 # Create Server Configuration file
 - name: Create/Update OpenVPN-CE Server configuration file.
   template:
@@ -11,6 +19,6 @@
 # Handle Openvpn Server Service
 - name: Enable and Start OpenVPN-CE Server service.
   service:
-    name: openvpn-server@server.service
+    name: openvpn-server@server
     state: started
     enabled: true
