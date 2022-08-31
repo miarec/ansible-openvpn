@@ -1,0 +1,6 @@
+openvpn_as_dependencies:
+openvpn_ce_dependencies:
+  - epel-release
+easyrsa_dependencies:
+  - epel-release
+easyrsa_dir: "/usr/share/easy-rsa/{{ easyrsa_version }}"

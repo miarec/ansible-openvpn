@@ -1,25 +1,51 @@
 ---
-- name: Install Dependencies [CE-RHEL/CentOS]
-  yum:
-    name:
-      - epel-release
-    state: present
-    update_cache: true
-  when: ansible_os_family == "RedHat"
+# - name: Install Dependencies [CE-RHEL/CentOS]
+#   yum:
+#     name:
+#       - epel-release
+#     state: present
+#     update_cache: true
+#   when: ansible_os_family == "RedHat"
 
-- name: Install OpenVPN Package. [CE-RHEL/CentOS]
-  yum:
-    name:
-      - openvpn
+- name: Install OpenVPN-CE dependencies.
+  package:
+    name: "{{ item }}"
     state: present
-  when: ansible_os_family == "RedHat"
+  with_items: "{{ openvpn_ce_dependencies }}"
 
-- name: Install OpenVPN package. [CE-Debian]
-  apt:
+- name: Install OpenVPN-CE Package.
+  package:
     name: openvpn
     state: present
-    update_cache: true
-  when: ansible_os_family == "Debian"
+
+
+# - name: Install OpenVPN Package. [CE-RHEL/CentOS]
+#   yum:
+#     name:
+#       - openvpn
+#     state: present
+#   when: ansible_os_family == "RedHat"
+
+# - name: Install OpenVPN package. [CE-Debian]
+#   apt:
+#     name: openvpn
+#     state: present
+#     update_cache: true
+#   when: ansible_os_family == "Debian"
+
+
+- name: Install Easy-RSA Dependencies.
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ easyrsa_dependencies }}"
+
+- name: Install Easy-RSA package.
+  package:
+    name: "easy-rsa-{{ easyrsa_version }}"
+    state: present
+
+
 
 # Set ip forwarding on in /proc and verify token value with the sysctl command
 - name: Enable IP forwarding for IPV4 networks

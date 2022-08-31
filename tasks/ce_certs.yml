@@ -1,24 +1,36 @@
 ---
 # Ensure Easy-RSA is installed
-- name: Install Easy-RSA package. [CE-RHEL/CentOS]
-  yum:
-    name: easy-rsa
-    state: present
-  when: ansible_os_family == "RedHat"
 
-- name: Install Easy-RSA package. [CE-Debian]
-  apt:
-    name: easy-rsa
-    state: present
-    update_cache: true
-  when: ansible_os_family == "Debian"
+# - name: Install Easy-RSA package. [CE-RHEL/CentOS]
+#   yum:
+#     name: "easy-rsa-{{ easyrsa_version }}"
+#     state: present
+#   when: ansible_os_family == "RedHat"
+
+# - name: Install Easy-RSA package. [CE-Debian]
+#   apt:
+#     name: easy-rsa
+#     state: present
+#     update_cache: true
+#   when: ansible_os_family == "Debian"
+
+# - name: Install Easy-RSA Dependencies.
+#   package:
+#     name: "{{ item }}"
+#     state: present
+#   with_items: "{{ easyrsa_dependencies }}"
+
+# - name: Install Easy-RSA package.
+#   package:
+#     name: "easy-rsa-{{ easyrsa_version }}"
+#     state: present
 
 # Create PKI Infrastructure
 - name: Create PKI directories.
   file:
     path: "{{ item }}"
     state: directory
-    mode: 700
+    mode: 0700
   with_items:
     - "{{ easyrsa_ca_dir }}"
     - "{{ easyrsa_server_dir }}"

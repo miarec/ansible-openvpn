@@ -4,7 +4,7 @@
   file:
     path: "{{ item }}"
     state: directory
-    mode: 700
+    mode: 0700
   with_items:
     - "{{ openvpn_clients_dir }}"
     - "{{ openvpn_clients_config_dir }}"
