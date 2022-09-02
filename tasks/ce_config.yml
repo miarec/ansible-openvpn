@@ -1,6 +1,6 @@
 ---
 # Create OpenVPN-CE Log Directory
-- name: Create Clients Configuration directory.
+- name: Create OpenVPN Log directory.
   file:
     path: "{{ openvpn_log_dir }}"
     state: directory
@@ -12,7 +12,7 @@
   template:
     src: server.conf.j2
     dest: "{{ openvpn_config_dir }}/server/{{ openvpn_server_conf }}"
-    owner: root
+    owner: "root"
     mode: 0644
   notify: restart openvpn
 

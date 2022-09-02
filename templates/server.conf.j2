@@ -7,6 +7,13 @@
 # https://github.com/miarec/ansible-openvpn  #
 ##############################################
 
+# Service Configuration.
+user {{ openvpn_system_user }}
+group {{ openvpn_system_group }}
+
+# Authentication Configuration
+plugin {{ openvpn_pam_plugin }} login
+
 # Connection Configuration
 port {{ openvpn_vpn_port }}
 proto {{ openvpn_vpn_protocol }}

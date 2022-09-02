@@ -1,4 +1,25 @@
 ---
+# Create non root user for OpenVPN
+- name: Create OpenVPN group.
+  group:
+    name: "{{ openvpn_system_group }}"
+    state: present
+    system: true
+  when:
+    - openvpn_system_group != "root"
+
+- name: Create OpenVPN user.
+  user:
+    name: "{{ openvpn_system_user }}"
+    groups: "{{ openvpn_system_group }}"
+    append: true
+    shell: /usr/sbin/nologin
+    system: true
+    createhome: false
+    home: /
+  when:
+    - openvpn_system_group != "root"
+
 # Install OpenVPN-CE
 - name: Install OpenVPN-CE dependencies.
   package:

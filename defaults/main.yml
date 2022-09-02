@@ -10,6 +10,9 @@ openvpn_clients_dir: "{{ openvpn_config_dir }}/client-configs"
 openvpn_clients_keys_dir: "{{ openvpn_clients_dir }}/keys"
 openvpn_clients_config_dir: "{{ openvpn_clients_dir }}/files"
 
+openvpn_system_user: "openvpn"
+openvpn_system_group: "openvpn"
+openvpn_user_group: "vpnuser"
 
 # OpenVPN Serer Config Variables
 openvpn_server_conf: "server.conf"
@@ -19,8 +22,8 @@ openvpn_log_ipp: "{{ openvpn_log_dir }}/ipp.txt"
 openvpn_log_status: "{{ openvpn_log_dir }}/status.log"
 openvpn_log_verb: 3
 openvpn_client_log_verb: 3
-# Set the appropriate level of log file verbosity 0-9.
 
+# Set the appropriate level of log file verbosity 0-9.
 openvpn_vpn_port: "443"
 openvpn_vpn_protocol: "tcp"
 keepalive_interval: 10  # in seconds
