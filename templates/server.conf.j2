@@ -8,8 +8,8 @@
 ##############################################
 
 # Service Configuration.
-user nobody
-group nobody
+user {{ openvpn_system_user }}
+group {{ openvpn_system_group }}
 
 # Authentication Configuration
 plugin {{ openvpn_pam_plugin }} login

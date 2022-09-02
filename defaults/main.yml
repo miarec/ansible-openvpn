@@ -10,6 +10,8 @@ openvpn_clients_dir: "{{ openvpn_config_dir }}/client-configs"
 openvpn_clients_keys_dir: "{{ openvpn_clients_dir }}/keys"
 openvpn_clients_config_dir: "{{ openvpn_clients_dir }}/files"
 
+openvpn_system_user: "openvpn"
+openvpn_system_group: "openvpn"
 
 # OpenVPN Serer Config Variables
 openvpn_server_conf: "server.conf"
