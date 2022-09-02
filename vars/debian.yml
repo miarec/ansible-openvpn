@@ -7,8 +7,6 @@ openvpn_as_dependencies:
 openvpn_ce_dependencies:
 openvpn_pam_plugin: "/usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so"
 
-
-
 easyrsa_package: "easy-rsa"
 easyrsa_dependencies:
 easyrsa_dir: "/usr/share/easy-rsa"
