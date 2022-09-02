@@ -10,9 +10,9 @@
     name: "{{ item }}"
     group: "{{ openvpn_user_group }}"
     state: present
-    password: "secret"
+    password: "{{ lookup('password', 'credentials/' + item.name + '/password.txt encrypt=md5_crypt') }}"
     update_password: on_create
-    with_items: "{{ users }}"
+  with_items: "{{ users }}"
 
 # Create Client Configurations Directories
 - name: Create Clients Configuration directory.
