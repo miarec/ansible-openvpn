@@ -2,7 +2,7 @@
 openvpn_as_dependencies:
 openvpn_ce_dependencies:
   - epel-release
-openvpn_pam_plugin: "/usr/share/openvpn/plugin/lib/openvpn-auth-pam.so"
+openvpn_pam_plugin: "/usr/lib64/openvpn/plugin/openvpn-auth-pam.so"
 
 easyrsa_version: "3.0.8"
 easyrsa_package: "easy-rsa-{{ easyrsa_version }}"
