@@ -12,7 +12,7 @@ user nobody
 group nobody
 
 # Authentication Configuration
-plugin /usr/share/openvpn/plugin/lib/openvpn-auth-pam.so login
+plugin {{ openvpn_pam_plugin }} login
 
 # Connection Configuration
 port {{ openvpn_vpn_port }}
